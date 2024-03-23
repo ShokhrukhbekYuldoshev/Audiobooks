@@ -1,8 +1,8 @@
 class LibrivoxApiUrls {
   static const String baseUrl = 'https://librivox.org/api/feed';
 
-  static const String audiobooksFeed = '$baseUrl/audiobooks?format=json';
-  static const String audiotracksFeed = '$baseUrl/audiotracks?format=json';
+  static const String audiobooksFeed =
+      '$baseUrl/audiobooks?limit=5&format=json';
   static const String authorsFeed = '$baseUrl/authors?format=json';
 }
 
@@ -13,11 +13,6 @@ class LibrivoxApiEndpoints {
       '${LibrivoxApiUrls.audiobooksFeed}/?id=$audiobookId?format=json';
   static String getAudiobooksUrlByTitle(String title) =>
       '${LibrivoxApiUrls.audiobooksFeed}/title/^$title?format=json';
-
-  // Audiotracks
-  static String getAudiotracksUrl() => LibrivoxApiUrls.audiotracksFeed;
-  static String getAudiotrackUrlById(int trackId) =>
-      '${LibrivoxApiUrls.audiotracksFeed}/?id=$trackId?format=json';
 
   // Authors
   static String getAuthorsUrl() => LibrivoxApiUrls.authorsFeed;

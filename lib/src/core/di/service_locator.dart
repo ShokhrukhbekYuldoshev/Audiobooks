@@ -1,15 +1,21 @@
-import 'package:audiobooks/src/core/constants/api.dart';
-import 'package:audiobooks/src/core/helpers/input_converter.dart';
-import 'package:audiobooks/src/features/audiobooks/data/datasources/remote/audiobooks_remote_data_source.dart';
-import 'package:audiobooks/src/features/audiobooks/data/repositories/audiobook_repository_impl.dart';
-import 'package:audiobooks/src/features/audiobooks/domain/repositories/audiobook_repository.dart';
-import 'package:audiobooks/src/features/audiobooks/domain/usecases/get_audiobooks_usecase.dart';
-import 'package:audiobooks/src/features/audiobooks/presentation/bloc/audiobooks_bloc.dart';
+import 'package:audiobooks/src/core/themes/cubit/theme_cubit.dart';
+import 'package:audiobooks/src/presentation/bloc/settings/settings_cubit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:audiobooks/src/core/constants/api.dart';
 import 'package:audiobooks/src/core/constants/assets.dart';
+import 'package:audiobooks/src/core/helpers/input_converter.dart';
 import 'package:audiobooks/src/core/network/network_service.dart';
+import 'package:audiobooks/src/data/datasources/local/audiobooks_local_data_source.dart';
+import 'package:audiobooks/src/data/datasources/local/db_service.dart';
+import 'package:audiobooks/src/data/datasources/remote/audiobooks_remote_data_source.dart';
+import 'package:audiobooks/src/data/repositories/audiobook_repository_impl.dart';
+import 'package:audiobooks/src/domain/repositories/audiobook_repository.dart';
+import 'package:audiobooks/src/domain/repositories/just_audio_player.dart';
+import 'package:audiobooks/src/domain/usecases/get_audiobooks_usecase.dart';
+import 'package:audiobooks/src/domain/usecases/get_authors_usecase.dart';
+import 'package:audiobooks/src/presentation/bloc/home/home_bloc.dart';
 
 import '../errors/failures.dart';
 import '../network/network_info.dart';
@@ -46,23 +52,40 @@ void init() {
     () => const InvalidInputFailure(),
   );
 
-  // ================================================================
-  // Features - AudioBook List
-
   // Data sources
   sl.registerLazySingleton(
     () => AudiobooksRemoteDataSource(networkService: sl()),
+  );
+  sl.registerLazySingleton(
+    () => AudiobooksLocalDataSource(
+      databaseService: DatabaseService.instance,
+    ),
   );
 
   // Repositories
   sl.registerLazySingleton<AudiobookRepository>(
     () => AudiobookRepositoryImpl(
       sl(),
+      sl(),
+      sl(),
     ),
+  );
+  sl.registerLazySingleton<JustAudioPlayer>(
+    () => JustAudioPlayerImpl(),
   );
 
   // Use cases
   sl.registerLazySingleton(() => GetAudiobooksUseCase(sl()));
+  sl.registerLazySingleton(() => GetAuthorsUseCase(sl()));
+
   // Bloc
-  sl.registerFactory(() => AudiobooksBloc(getAudiobooksUsecase: sl()));
+  sl.registerFactory(
+    () => HomeBloc(
+      getAudiobooksUseCase: sl(),
+      getAuthorsUseCase: sl(),
+    ),
+  );
+  // Cubit
+  sl.registerFactory(() => ThemeCubit());
+  sl.registerFactory(() => SettingsCubit());
 }
