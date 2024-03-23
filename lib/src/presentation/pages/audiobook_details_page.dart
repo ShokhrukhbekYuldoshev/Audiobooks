@@ -81,20 +81,28 @@ class _AudiobookDetailsPageState extends State<AudiobookDetailsPage> {
               ),
               background: Hero(
                 tag: widget.audiobook.id,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: loadImage(
-                        widget.audiobook.rssFeed!.channel.itunesImageHref,
+                child: canLoadImage(
+                        widget.audiobook.rssFeed!.channel.itunesImageHref)
+                    ? CachedNetworkImage(
+                        imageUrl:
+                            widget.audiobook.rssFeed!.channel.itunesImageHref,
+                        placeholder: (context, url) => const SizedBox(),
+                        color: Colors.black.withOpacity(0.5),
+                        colorBlendMode: BlendMode.darken,
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/cover.jpg',
+                          fit: BoxFit.cover,
+                          color: Colors.black.withOpacity(0.5),
+                          colorBlendMode: BlendMode.darken,
+                        ),
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/images/cover.jpg',
+                        fit: BoxFit.cover,
+                        color: Colors.black.withOpacity(0.5),
+                        colorBlendMode: BlendMode.darken,
                       ),
-                      colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.5),
-                        BlendMode.darken,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
               ),
             ),
           ),
@@ -186,18 +194,6 @@ class _AudiobookDetailsPageState extends State<AudiobookDetailsPage> {
             },
             child: const Icon(Icons.play_arrow),
           );
-  }
-
-  ImageProvider loadImage(String url) {
-    if (canLoadImage(url)) {
-      return CachedNetworkImageProvider(
-        url,
-      );
-    }
-
-    return const AssetImage(
-      'assets/images/cover.jpg',
-    ) as ImageProvider;
   }
 }
 

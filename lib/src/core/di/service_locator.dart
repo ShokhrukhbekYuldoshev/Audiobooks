@@ -1,4 +1,5 @@
 import 'package:audiobooks/src/core/themes/cubit/theme_cubit.dart';
+import 'package:audiobooks/src/presentation/bloc/player/player_bloc.dart';
 import 'package:audiobooks/src/presentation/bloc/settings/settings_cubit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -85,6 +86,12 @@ void init() {
       getAuthorsUseCase: sl(),
     ),
   );
+  sl.registerFactory(
+    () => PlayerBloc(
+      player: sl(),
+    ),
+  );
+
   // Cubit
   sl.registerFactory(() => ThemeCubit());
   sl.registerFactory(() => SettingsCubit());

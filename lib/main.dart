@@ -1,5 +1,3 @@
-import 'package:audiobooks/src/core/themes/cubit/theme_cubit.dart';
-import 'package:audiobooks/src/presentation/bloc/settings/settings_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -7,10 +5,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:audiobooks/src/app.dart';
 import 'package:audiobooks/src/core/di/service_locator.dart';
+import 'package:audiobooks/src/core/themes/cubit/theme_cubit.dart';
 import 'package:audiobooks/src/domain/repositories/just_audio_player.dart';
 import 'package:audiobooks/src/presentation/bloc/home/home_bloc.dart';
-
-// TODO: implement playlist (whole book) instead of single book chapter
+import 'package:audiobooks/src/presentation/bloc/player/player_bloc.dart';
+import 'package:audiobooks/src/presentation/bloc/settings/settings_cubit.dart';
 
 Future<void> main() async {
   // Ensure that the Flutter binding has been initialized
@@ -41,6 +40,9 @@ Future<void> main() async {
       providers: [
         BlocProvider(
           create: (context) => sl<HomeBloc>()..add(GetHomePageEvent()),
+        ),
+        BlocProvider(
+          create: (context) => sl<PlayerBloc>(),
         ),
         BlocProvider(
           create: (context) => sl<ThemeCubit>(),

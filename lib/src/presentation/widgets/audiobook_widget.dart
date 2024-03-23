@@ -35,6 +35,9 @@ class AudiobookWidget extends StatelessWidget {
                           placeholder: (context, url) => const SizedBox(),
                           errorWidget: (context, url, error) => Image.asset(
                             'assets/images/cover.jpg',
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
                           ),
                           height: 150,
                           width: 150,

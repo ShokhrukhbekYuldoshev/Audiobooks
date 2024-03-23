@@ -2,6 +2,9 @@ import "package:shimmer/shimmer.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:audiobooks/src/core/di/service_locator.dart';
+import 'package:audiobooks/src/core/helpers/helpers.dart';
+import 'package:audiobooks/src/core/network/network_info.dart';
 import 'package:audiobooks/src/core/router/app_router.dart';
 import 'package:audiobooks/src/presentation/bloc/home/home_bloc.dart';
 import 'package:audiobooks/src/presentation/widgets/audiobook_widget.dart';
@@ -63,6 +66,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
+                // TODO: Implement search
                 // Search bar
                 // Positioned(
                 //   top: 150,
@@ -136,6 +140,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (state is HomeLoaded) {
+                  if (state.audiobooks.isEmpty) {
+                    return const Center(
+                      child: Text("No audiobooks found"),
+                    );
+                  }
                   return SizedBox(
                     height: 170,
                     child: ListView.builder(
@@ -206,6 +215,33 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (state is HomeLoaded) {
+                  if (state.authors.isEmpty) {
+                    return Column(
+                      children: [
+                        const Center(
+                          child: Text("No authors found"),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () async {
+                            bool isConnected =
+                                await sl<NetworkInfo>().isConnected;
+                            if (context.mounted) {
+                              if (!isConnected) {
+                                showSnackBar(context, "No internet connection");
+                                return;
+                              }
+
+                              context.read<HomeBloc>().add(
+                                    GetHomePageEvent(),
+                                  );
+                            }
+                          },
+                          child: const Text('Try again'),
+                        ),
+                      ],
+                    );
+                  }
                   return SizedBox(
                     height: 170,
                     child: ListView.builder(

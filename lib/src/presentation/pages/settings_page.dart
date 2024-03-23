@@ -53,53 +53,49 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         }
       },
-      child: BlocBuilder<ThemeCubit, ThemeState>(
-        builder: (context, state) {
-          return Scaffold(
-            // package info
-            bottomNavigationBar: _buildBottomBar(),
-            appBar: AppBar(
-              title: const Text('Settings'),
-            ),
-            body: ListView(
-              children: [
-                // change theme
-                const ChangeThemeTile(),
-                // delete downloaded audiobooks
-                ListTile(
-                  title: const Text('Delete downloaded audiobooks'),
-                  subtitle: const Text('This action is permanent'),
-                  trailing: const Icon(Icons.delete_forever),
-                  onTap: () async {
-                    final confirmed = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Delete downloaded audiobooks'),
-                        content: const Text(
-                          'Are you sure you want to delete all downloaded audiobooks?',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text('Delete'),
-                          ),
-                        ],
+      child: Scaffold(
+        // package info
+        bottomNavigationBar: _buildBottomBar(),
+        appBar: AppBar(
+          title: const Text('Settings'),
+        ),
+        body: ListView(
+          children: [
+            // change theme
+            const ChangeThemeTile(),
+            // delete downloaded audiobooks
+            ListTile(
+              title: const Text('Delete downloaded audiobooks'),
+              subtitle: const Text('This action is permanent'),
+              trailing: const Icon(Icons.delete_forever),
+              onTap: () async {
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete downloaded audiobooks'),
+                    content: const Text(
+                      'Are you sure you want to delete all downloaded audiobooks?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancel'),
                       ),
-                    );
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
 
-                    if (confirmed == true && context.mounted) {
-                      context.read<SettingsCubit>().deleteAllDownloads();
-                    }
-                  },
-                ),
-              ],
+                if (confirmed == true && context.mounted) {
+                  context.read<SettingsCubit>().deleteAllDownloads();
+                }
+              },
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
@@ -137,58 +133,65 @@ class ChangeThemeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: const Text('Theme'),
-      subtitle: FutureBuilder(
-        future: sl<AppTheme>().getThemeMode(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox.shrink();
-          }
-          ThemeMode themeMode = snapshot.data as ThemeMode;
-          return Text(themeMode.name.capitalize());
-        },
-      ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () async {
-        // show theme selection
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return FutureBuilder(
-                future: sl<AppTheme>().getThemeMode(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const SizedBox.shrink();
-                  }
-                  ThemeMode themeMode = snapshot.data as ThemeMode;
-                  return SimpleDialog(
-                    title: const Text('Select theme'),
-                    children: [
-                      RadioListTile<ThemeMode>(
-                        value: ThemeMode.system,
-                        groupValue: themeMode,
-                        onChanged: (value) =>
-                            context.read<ThemeCubit>().themeModeChanged(value!),
-                        title: const Text('System'),
-                      ),
-                      RadioListTile<ThemeMode>(
-                        value: ThemeMode.light,
-                        groupValue: themeMode,
-                        onChanged: (value) =>
-                            context.read<ThemeCubit>().themeModeChanged(value!),
-                        title: const Text('Light'),
-                      ),
-                      RadioListTile<ThemeMode>(
-                        value: ThemeMode.dark,
-                        groupValue: themeMode,
-                        onChanged: (value) =>
-                            context.read<ThemeCubit>().themeModeChanged(value!),
-                        title: const Text('Dark'),
-                      ),
-                    ],
-                  );
-                });
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        return ListTile(
+          title: const Text('Theme'),
+          subtitle: FutureBuilder(
+            future: sl<AppTheme>().getThemeMode(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox.shrink();
+              }
+              ThemeMode themeMode = snapshot.data as ThemeMode;
+              return Text(themeMode.name.capitalize());
+            },
+          ),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () async {
+            // show theme selection
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return FutureBuilder(
+                    future: sl<AppTheme>().getThemeMode(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      ThemeMode themeMode = snapshot.data as ThemeMode;
+                      return SimpleDialog(
+                        title: const Text('Select theme'),
+                        children: [
+                          RadioListTile<ThemeMode>(
+                            value: ThemeMode.system,
+                            groupValue: themeMode,
+                            onChanged: (value) => context
+                                .read<ThemeCubit>()
+                                .themeModeChanged(value!),
+                            title: const Text('System'),
+                          ),
+                          RadioListTile<ThemeMode>(
+                            value: ThemeMode.light,
+                            groupValue: themeMode,
+                            onChanged: (value) => context
+                                .read<ThemeCubit>()
+                                .themeModeChanged(value!),
+                            title: const Text('Light'),
+                          ),
+                          RadioListTile<ThemeMode>(
+                            value: ThemeMode.dark,
+                            groupValue: themeMode,
+                            onChanged: (value) => context
+                                .read<ThemeCubit>()
+                                .themeModeChanged(value!),
+                            title: const Text('Dark'),
+                          ),
+                        ],
+                      );
+                    });
+              },
+            );
           },
         );
       },

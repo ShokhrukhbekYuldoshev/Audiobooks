@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
             }
 
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Audiobooks',
               themeMode: themeMode,
               theme: sl<AppTheme>().lightTheme,
