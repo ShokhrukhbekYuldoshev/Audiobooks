@@ -150,7 +150,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## 📧 Contact
 
--   [Email](mailto:shokhrukhbekdev@gmail.com)
+-   [Email](mailto:shokh.xyz@gmail.com)
 -   [GitHub](https://github.com/ShokhrukhbekYuldoshev)
 
 ## 🌟 Show your support
